@@ -283,11 +283,11 @@ include 'settings_server.php';
         $statement_put  =$db->prepare( $query );
 	$res_fields->execute();
 	while( $row = $res_fields->fetch( PDO::FETCH_ASSOC ) ){
-           logit( "Binding field " . $row[ 'fieldText'] . " with value " . $mydata->{ $row['fieldText'] } );
+           logit( "Binding field " . $row[ 'fieldText'] . " with value '" . $mydata->{ $row['fieldText'] }."'" );
            $statement_put->bindValue( ':' . $row[ 'fieldText' ], $mydata->{ $row['fieldText'] } );
         }
  	$statement_put->execute();
- 	$id = $db->lastInsertRowID();
+ 	$id = $db->lastInsertId();
 	logit( "id = " . $id );
 	$ids[] = $id;
 
@@ -307,7 +307,11 @@ include 'settings_server.php';
       $mydata = json_decode( $inp );
        
       logit( "mydata = " . $mydata  );
-
+#      print_r( $mydata )
+#       logit( "dd" );
+#      foreach( $mydata[0] as $k => $v ) {
+#          logit( " k = " . $k . " v = " . $v );
+#      }
       $statement = $db->prepare( "SELECT writeTemplate  FROM writeTemplate WHERE tablename = :tab;" );
       $statement->bindValue( ':tab', $view );	       
       $res_template = $statement->execute();
@@ -336,7 +340,7 @@ include 'settings_server.php';
 	      	     WriteRow( $db, $statement, $query, $mydata, $ids );
 
 		 }
-		  header( 'Location: ' . $_SERVER[ 'SCRIPT_NAME']. '/' . $view . '/' . $id );
+		  header( 'Location: ' . $_SERVER[ 'SCRIPT_NAME']. '/' . $view . '/' . $ids[0] );
 		  logit( json_encode( $ids ) );
 		  print( json_encode( $ids ) );
               }
@@ -449,11 +453,11 @@ $params = array();
 #GetViewName( "/users?username=1231", $params);
 
 
-logit( "Headers :-" );
-foreach($_SERVER as $key => $value) {
-   logit( $key . "=>". $value );
-}
-logit( "Headers done" );
+#logit( "Headers :-" );
+#foreach($_SERVER as $key => $value) {
+#   logit( $key . "=>". $value );
+#}
+#logit( "Headers done" );
 
 
     session_start();
